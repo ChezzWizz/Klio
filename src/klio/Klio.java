@@ -11,7 +11,7 @@ public class Klio {
             System.err.println("Error on exit. Main loop terminated abnormally.");
             break;
         case 0:
-        default: // No errors. Clean exit. This is a demo edit. Haha!
+        default: // Any one who pulls now, after editing this line, will have to resolve a conflict.
         }
     }
 
