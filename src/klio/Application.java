@@ -39,6 +39,14 @@ public class Application {
         
         while (_gameState == 1)
         {
+            out.println();
+            out.println("Text will be here. Lorem ipsum dolor sit amet, consectetur adipiscing"
+                    + "elit. In egestas odio sed tortor elementum egestas. Etiam volutpat eros"
+                    + "dignissim, pellentesque velit eu, dictum ante. Quisque lacus enim, egestas"
+                    + "in tellus non, congue elementum diam. Integer lorem ligula, suscipit sed "
+                    + "enim non, dignissim gravida turpis. Mauris id diam ut turpis consequat"
+                    + "imperdiet quis ut ligula. Sed pellentesque commodo felis vel cursus.");
+            out.println();
             out.print(prompt);
             
             String command = keyboard.nextLine();
