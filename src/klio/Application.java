@@ -78,6 +78,6 @@ public class Application {
         }
 
         keyboard.close();
-        return -1; // Clean exit happens within lop.
+        return -1; // Clean exit happens within loop.
     }
 }
