@@ -20,14 +20,25 @@
  **************************************************************************************************/
 
 
-package klio.server;
+import klio.KlioApp;
+
+import java.io.File;
 
 /**
- * Created by Chezz on 12/17/2015.
- * The main http command server application execution class. Contains main program entry point.
+ * Created by Chezz on 1/1/2016.
  */
-public class HttpCommandServerMain {
+public class Klio {
     public static void main(String[] args) {
-        System.out.print("Hello Http Command Server!");
+        // TODO: Parse any commandline switches
+        //      Possible switches:
+        //          -a <adventure_filename>
+
+        File adventureFile = null;
+
+        // if an adventure file is passed as an argument then set the file to the arguments
+        //  parameter. Otherwise, set the file to a default adventure file or show an error.
+
+        // Start the application
+        KlioApp app = new KlioApp(adventureFile);
     }
 }

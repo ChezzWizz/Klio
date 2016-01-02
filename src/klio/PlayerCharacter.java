@@ -20,14 +20,29 @@
  **************************************************************************************************/
 
 
-package klio.client.serverconsole;
+package klio;
 
 /**
- * Created by Chezz on 12/17/2015.
- * The main server console application execution class. Contains main program entry point.
+ * This class contains all the state information about the player. This class tracks the character's
+ * current attributes, the current scene being applied, the current amount of life, any equipment
+ * being carried, and any skills the character might have.
+ *
+ * Created by Chezz on 1/1/2016.
  */
-public class ServerConsoleMain {
-    public static void main(String[] args) {
-        System.out.print("Hello Server Console!");
+public class PlayerCharacter {
+    public int strength;
+    public int agility;
+    public int dexterity;
+    public int intelligence;
+    public int wisdom;
+    public int charisma;
+
+    PlayerCharacter(int str, int agl, int dex, int inl, int wis, int cha) {
+        strength = str;
+        agility = agl;
+        dexterity = dex;
+        intelligence = inl;
+        wisdom = wis;
+        charisma = cha;
     }
 }
