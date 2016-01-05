@@ -37,8 +37,10 @@ public class Klio {
 
         // if an adventure file is passed as an argument then set the file to the arguments
         //  parameter. Otherwise, set the file to a default adventure file or show an error.
+        adventureFile = new File("default_adventure.kaf");
 
         // Start the application
         KlioApp app = new KlioApp(adventureFile);
+        app.startGame();
     }
 }

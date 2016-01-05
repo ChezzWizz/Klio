@@ -22,6 +22,8 @@
 
 package klio;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class KlioApp {
     private final String _PROMPT = "~>";
 
     private File _adventureFile;
-    private Map<Integer, String> _sceneMap;
+    private Map<Integer, Scene> _sceneMap;
     private PlayerCharacter _pc;
     private Scene _currentScene;
 
@@ -44,6 +46,16 @@ public class KlioApp {
 
         // TODO: Load the adventure file
         //  * Add each scene from the file into the scene map.
+        _adventureFile = adventureFile;
+
+        try {
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser saxParser = parserFactory.newSAXParser();
+            AdventureFileSAXHandler saxHandler = new AdventureFileSAXHandler(_sceneMap);
+            saxParser.parse(_adventureFile, saxHandler);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void startGame() {
@@ -51,6 +63,10 @@ public class KlioApp {
         //  * Get a player character to use
         //  * Start displaying scenes followed by a prompt
         //  * Get user input and display a new scene
+
+        for (Map.Entry<Integer, Scene> e : _sceneMap.entrySet()) {
+            System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
+        }
     }
 
     private void createCharacter() {

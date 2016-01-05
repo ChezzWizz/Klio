@@ -36,13 +36,19 @@ public class PlayerCharacter {
     public int intelligence;
     public int wisdom;
     public int charisma;
+    public int minDamage;
+    public int maxDamage;
+    public int armorClass;
 
-    PlayerCharacter(int str, int agl, int dex, int inl, int wis, int cha) {
+    PlayerCharacter(int str, int agl, int dex, int inl, int wis, int cha, int minDmg, int maxDmg) {
         strength = str;
         agility = agl;
         dexterity = dex;
         intelligence = inl;
         wisdom = wis;
         charisma = cha;
+        minDamage = minDmg;
+        maxDamage = maxDmg;
+        armorClass = 10;
     }
 }
