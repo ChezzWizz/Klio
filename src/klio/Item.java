@@ -22,6 +22,8 @@
 
 package klio;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,9 +32,46 @@ import java.util.Map;
  * Created by Chezz on 1/1/2016.
  */
 public class Item {
-    public String text;
-    public int minDamage;
-    public int maxDamage;
-    public int armorBonus;
-    public Map<String, String> commands;
+	private String _text;
+    private int _id;
+    private Map<String, String> _commandMap;
+    private Map<String, Integer> _attributeMap;
+    
+    public Item(int id) {
+		_id = id;
+    	_text = null;
+    	_commandMap = new HashMap<>();
+    	_attributeMap = new HashMap<>(3);
+    	_attributeMap.put("min_damage", null);
+    	_attributeMap.put("max_damage", null);
+    	_attributeMap.put("armor_bonus", null);
+	}
+    
+    public void setText(String text) {
+    	_text = text;
+    }
+    
+    public String getText() {
+    	return _text;
+    }
+    
+    public int getId() {
+    	return _id;
+    }
+    
+    public void setAttribute(String attribute, int value) {
+    	_attributeMap.replace(attribute, value);
+    }
+    
+    public Map<String, Integer> getAttributeMap() {
+    	return Collections.unmodifiableMap(_attributeMap);
+    }
+    
+    public void setCommandMap(Map<String, String> map) {
+    	_commandMap = map;
+    }
+    
+    public void addCommand(String command, String target) {
+    	_commandMap.put(command, target);
+    }
 }

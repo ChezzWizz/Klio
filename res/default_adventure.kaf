@@ -43,7 +43,7 @@
         </scene>
         <scene id="8">
             <text>You feel the refreshing cold slide down into your stomach.</text>
-            <commands>{ "@":% }</commands> <!-- * auto exectues a command action or opens the specified scene.-->
+            <commands>{ "@":% }</commands> <!-- @ auto exectues a command action or opens the specified scene.-->
         </scene>
         <scene id="9" top_level="true">
             <text>You walk out the door to the light house. The cool air hits your face and you breath deeply. Your adventure set before you, you set off down the road ahead.</text>

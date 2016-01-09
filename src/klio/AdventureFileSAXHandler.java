@@ -40,11 +40,13 @@ public class AdventureFileSAXHandler extends DefaultHandler {
 
     private Map<Integer, Scene> _sceneMap;
     private Map<Integer, Npc> _npcMap;
+    private Map<Integer, Item> _itemMap;
 
     private Object _obj = null;
 
     private boolean _inSceneNode = false;
     private boolean _inNpcNode = false;
+    private boolean _inItemNode = false;
 
     private boolean _inTextNode = false;
     private boolean _inCommandsNode = false;
@@ -61,9 +63,11 @@ public class AdventureFileSAXHandler extends DefaultHandler {
      * @param sceneMap The scene map to populate.
      * @param npcMap The npc map to populate.
      */
-    public AdventureFileSAXHandler(Map<Integer, Scene> sceneMap, Map<Integer, Npc> npcMap) {
+    public AdventureFileSAXHandler(Map<Integer, Scene> sceneMap, Map<Integer, Npc> npcMap,
+    		Map<Integer, Item> itemMap) {
         _sceneMap = sceneMap;
         _npcMap = npcMap;
+        _itemMap = itemMap;
     }
 
     /**
@@ -92,6 +96,12 @@ public class AdventureFileSAXHandler extends DefaultHandler {
             _inNpcNode = true;
             int npcId = Integer.parseInt(attributes.getValue("id"));
             _obj = new Npc(npcId);
+        }
+        
+        if (qName.equalsIgnoreCase("item")) {
+        	_inItemNode = true;
+        	int itemId = Integer.parseInt(attributes.getValue("id"));
+        	_obj = new Item(itemId);
         }
 
         if (qName.equalsIgnoreCase("text")) {
@@ -138,12 +148,20 @@ public class AdventureFileSAXHandler extends DefaultHandler {
             }
         }
 
-        if (qName.equals("npc")) {
+        if (qName.equalsIgnoreCase("npc")) {
             _inNpcNode = false;
 
             if (_obj instanceof Npc) {
                 _npcMap.put(((Npc)_obj).getId(), (Npc)_obj);
             }
+        }
+        
+        if (qName.equalsIgnoreCase("item")) {
+        	_inItemNode = false;
+        	
+        	if (_obj instanceof Item) {
+        		_itemMap.put(((Item)_obj).getId(), (Item)_obj);
+        	}
         }
 
         if (qName.equalsIgnoreCase("text")) {
@@ -209,9 +227,14 @@ public class AdventureFileSAXHandler extends DefaultHandler {
         }
 
         if (_inAttributeSubNode) {
+        	String val = new String(ch, start, length);
+        	
             if (_inNpcNode && _obj instanceof Npc) {
-                String val = new String(ch, start, length);
                 ((Npc)_obj).setAttribute(_currentAttributeNode, Integer.parseInt(val));
+            }
+            
+            if (_inItemNode && _obj instanceof Item) {
+            	((Item)_obj).setAttribute(_currentAttributeNode, Integer.parseInt(val));
             }
         }
     }
@@ -241,7 +264,7 @@ public class AdventureFileSAXHandler extends DefaultHandler {
     }
 
     /**
-     * This is a utility method for triming the specified character from the beginning and end of a
+     * This is a utility method for trimming the specified character from the beginning and end of a
      * string.
      * @param c The character to trim off.
      * @param s The string to trim the character from

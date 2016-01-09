@@ -40,12 +40,14 @@ public class KlioApp {
     private File _adventureFile;
     private Map<Integer, Scene> _sceneMap;
     private Map<Integer, Npc> _npcMap;
+    private Map<Integer, Item> _itemMap;
     private PlayerCharacter _pc;
     private Scene _currentScene;
 
     public KlioApp(File adventureFile) {
         _sceneMap = new HashMap<>();
         _npcMap = new HashMap<>();
+        _itemMap = new HashMap<>();
 
         // TODO: Load the adventure file
         //  * Add each scene from the file into the scene map.
@@ -54,7 +56,7 @@ public class KlioApp {
         try {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = parserFactory.newSAXParser();
-            AdventureFileSAXHandler saxHandler = new AdventureFileSAXHandler(_sceneMap, _npcMap);
+            AdventureFileSAXHandler saxHandler = new AdventureFileSAXHandler(_sceneMap, _npcMap, _itemMap);
             saxParser.parse(_adventureFile, saxHandler);
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
