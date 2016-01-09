@@ -1,7 +1,7 @@
-/***************************************************************************************************
+ /***************************************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c)2015 Project Klio
+ * Copyright (c)2015 Project klio.Klio
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,11 +20,15 @@
  **************************************************************************************************/
 
 
-import klio.KlioApp;
+package klio;
+
 
 import java.io.File;
 
 /**
+ * This is the main application class. Handles command line options, creates application object, and
+ * starts the main game loop.
+ *
  * Created by Chezz on 1/1/2016.
  */
 public class Klio {

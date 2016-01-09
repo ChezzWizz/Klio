@@ -1,7 +1,7 @@
 /***************************************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c)2015 Project Klio
+ * Copyright (c)2015 Project klio.Klio
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -25,6 +25,7 @@ package klio;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,11 +39,13 @@ public class KlioApp {
 
     private File _adventureFile;
     private Map<Integer, Scene> _sceneMap;
+    private Map<Integer, Npc> _npcMap;
     private PlayerCharacter _pc;
     private Scene _currentScene;
 
     public KlioApp(File adventureFile) {
         _sceneMap = new HashMap<>();
+        _npcMap = new HashMap<>();
 
         // TODO: Load the adventure file
         //  * Add each scene from the file into the scene map.
@@ -51,8 +54,10 @@ public class KlioApp {
         try {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = parserFactory.newSAXParser();
-            AdventureFileSAXHandler saxHandler = new AdventureFileSAXHandler(_sceneMap);
+            AdventureFileSAXHandler saxHandler = new AdventureFileSAXHandler(_sceneMap, _npcMap);
             saxParser.parse(_adventureFile, saxHandler);
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,9 +69,28 @@ public class KlioApp {
         //  * Start displaying scenes followed by a prompt
         //  * Get user input and display a new scene
 
+        dataDump();
+    }
+
+    private void dataDump() {
+        System.out.println("---= Scene Data =---");
+
         for (Map.Entry<Integer, Scene> e : _sceneMap.entrySet()) {
             System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
         }
+
+        System.out.println("---= NPC Data =---");
+
+        for (Map.Entry<Integer, Npc> e : _npcMap.entrySet()) {
+            System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
+
+            for (Map.Entry<String, Integer> f : e.getValue().getAttributeMap().entrySet()) {
+                System.out.println("  " + f.getKey() + ": " + f.getValue());
+            }
+
+        }
+
+        System.out.println("---= Item Data =---");
     }
 
     private void createCharacter() {

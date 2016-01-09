@@ -1,7 +1,7 @@
 /***************************************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c)2015 Project Klio
+ * Copyright (c)2015 Project klio.Klio
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -22,6 +22,8 @@
 
 package klio;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,17 +36,67 @@ import java.util.Map;
  * Created by Chezz on 1/1/2016.
  */
 public class Npc {
-    public int strength;
-    public int agility;
-    public int dexterity;
-    public int intelligence;
-    public int wisdom;
-    public int charisma;
-    public int minDamage;
-    public int maxDamage;
-    public int armorClass;
-    public String text;
-    public List<Item> items;
-    public Map<String, String> commands;
+    private Map <String, Integer> _attributeMap;
+    private String _text;
+    private Map<String, String> _itemMap;
+    private Map<String, String> _commandMap;
+    private int _id;
 
+    public Npc(int id) {
+        _id = id;
+        _text = null;
+        _itemMap = new HashMap<>();
+        _commandMap = new HashMap<>();
+        _attributeMap = new HashMap<>(9);
+
+        _attributeMap.put("str", null);
+        _attributeMap.put("agl", null);
+        _attributeMap.put("dex", null);
+        _attributeMap.put("int", null);
+        _attributeMap.put("wis", null);
+        _attributeMap.put("cha", null);
+        _attributeMap.put("min_damage", null);
+        _attributeMap.put("max_damage", null);
+        _attributeMap.put("armor_bonus", null);
+    }
+
+    public int getId() {
+        return _id;
+    }
+
+    public void setText(String text) {
+        _text = text;
+    }
+
+    public String getText() {
+        return _text;
+    }
+
+    public void setAttribute(String attrName, int attrValue) {
+        _attributeMap.replace(attrName, attrValue);
+    }
+
+    public int getAttribute(String attrName) {
+        return _attributeMap.get(attrName);
+    }
+
+    public Map<String, Integer> getAttributeMap() {
+        return Collections.unmodifiableMap(_attributeMap);
+    }
+
+    public void setCommandMap(Map<String, String> map) {
+        _commandMap = map;
+    }
+
+    public void addCommand(String command, String target) {
+        _commandMap.put(command, target);
+    }
+
+    public void setItemMap(Map<String, String> map) {
+        _itemMap = map;
+    }
+
+    public void addItem(String textDescriptor, String itemId) {
+        _itemMap.put(textDescriptor, itemId);
+    }
 }

@@ -1,7 +1,7 @@
 /***************************************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c)2015 Project Klio
+ * Copyright (c)2015 Project klio.Klio
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -30,25 +30,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * This is the Simple Api for XML handler for Klio adventure files. This class reads each xml node
+ * that contains scene, npc, or item data and loads it into the map that is provided when the
+ * SAXHandler is created.
+ *
  * Created by Chezz on 1/4/2016.
  */
 public class AdventureFileSAXHandler extends DefaultHandler {
 
     private Map<Integer, Scene> _sceneMap;
+    private Map<Integer, Npc> _npcMap;
 
     private Object _obj = null;
 
     private boolean _inSceneNode = false;
+    private boolean _inNpcNode = false;
 
     private boolean _inTextNode = false;
     private boolean _inCommandsNode = false;
-    private boolean _inNpcsNode = false;
-    private boolean _inItemsNode = false;
+    private boolean _inNpcRefsNode = false;
+    private boolean _inItemRefsNode = false;
 
-    public AdventureFileSAXHandler(Map<Integer, Scene> sceneMap) {
+    private boolean _inAttributesNode = false;
+    private boolean _inAttributeSubNode = false;
+
+    private String _currentAttributeNode = null;
+
+    /**
+     * Constructs the handler object with the maps to fill with data from the xml.
+     * @param sceneMap The scene map to populate.
+     * @param npcMap The npc map to populate.
+     */
+    public AdventureFileSAXHandler(Map<Integer, Scene> sceneMap, Map<Integer, Npc> npcMap) {
         _sceneMap = sceneMap;
+        _npcMap = npcMap;
     }
 
+    /**
+     * Sets the current state to indicate what node we are in and if we are in an attribute node, we
+     * then set the name of the attribute node that we are currently in. This method also
+     * instantiates a new object of the type we need to populate the map associated with the current
+     * node we are in.
+     * @param uri
+     * @param localName
+     * @param qName
+     * @param attributes
+     * @throws SAXException
+     */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
         throws SAXException {
@@ -60,6 +88,12 @@ public class AdventureFileSAXHandler extends DefaultHandler {
             _obj = new Scene(sceneId, isTopLevel);
         }
 
+        if (qName.equalsIgnoreCase("npc")) {
+            _inNpcNode = true;
+            int npcId = Integer.parseInt(attributes.getValue("id"));
+            _obj = new Npc(npcId);
+        }
+
         if (qName.equalsIgnoreCase("text")) {
             _inTextNode = true;
         }
@@ -68,23 +102,47 @@ public class AdventureFileSAXHandler extends DefaultHandler {
             _inCommandsNode = true;
         }
 
-        if (qName.equalsIgnoreCase("npcs")) {
-            _inNpcsNode = true;
+        if (qName.equalsIgnoreCase("npc_refs")) {
+            _inNpcRefsNode = true;
         }
 
-        if (qName.equalsIgnoreCase("items")) {
-            _inItemsNode = true;
+        if (qName.equalsIgnoreCase("item_refs")) {
+            _inItemRefsNode = true;
+        }
+
+        if (_inAttributesNode) {
+            _inAttributeSubNode = true;
+            _currentAttributeNode = qName;
+        } else if (qName.equalsIgnoreCase("attributes")) {
+            _inAttributesNode = true;
         }
 
     }
 
+    /**
+     * Sets the current state to indicate which nodes we are no longer in and populates the scene
+     * with the object that should now be full of the data from the corresponding node.
+     * @param uri
+     * @param localName
+     * @param qName
+     * @throws SAXException
+     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+
         if (qName.equalsIgnoreCase("scene")) {
             _inSceneNode = false;
 
             if (_obj instanceof Scene) {
                 _sceneMap.put(((Scene)_obj).getId(), (Scene)_obj);
+            }
+        }
+
+        if (qName.equals("npc")) {
+            _inNpcNode = false;
+
+            if (_obj instanceof Npc) {
+                _npcMap.put(((Npc)_obj).getId(), (Npc)_obj);
             }
         }
 
@@ -96,15 +154,31 @@ public class AdventureFileSAXHandler extends DefaultHandler {
             _inCommandsNode = false;
         }
 
-        if (qName.equalsIgnoreCase("npcs")) {
-            _inNpcsNode = false;
+        if (qName.equalsIgnoreCase("npc_refs")) {
+            _inNpcRefsNode = false;
         }
 
-        if (qName.equalsIgnoreCase("items")) {
-            _inItemsNode = false;
+        if (qName.equalsIgnoreCase("item_refs")) {
+            _inItemRefsNode = false;
+        }
+
+        if (_inAttributeSubNode) {
+            _inAttributeSubNode = false;
+            _currentAttributeNode = null;
+        }
+
+        if (qName.equalsIgnoreCase("attributes")) {
+            _inAttributesNode = false;
         }
     }
 
+    /**
+     * Get the character data and convert it according to the rules for whatever node we are in.
+     * @param ch The array of character data up to the cursor position in the document
+     * @param start The starting index for the character data contained within the current node.
+     * @param length The length of the character data in the current node.
+     * @throws SAXException
+     */
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
 
@@ -112,7 +186,11 @@ public class AdventureFileSAXHandler extends DefaultHandler {
             ((Scene)_obj).setText(new String(ch, start, length));
         }
 
-        if (_inCommandsNode || _inNpcsNode || _inItemsNode) {
+        if (_inNpcNode && _inTextNode && _obj instanceof Npc) {
+            ((Npc)_obj).setText(new String(ch, start, length));
+        }
+
+        if (_inCommandsNode || _inNpcRefsNode || _inItemRefsNode) {
             Map<String, String> map = parseMap(new String(ch, start, length));
 
             if (_inSceneNode && _obj instanceof Scene) {
@@ -120,17 +198,30 @@ public class AdventureFileSAXHandler extends DefaultHandler {
                     ((Scene) _obj).setCommandMap(map);
                 }
 
-                if (_inNpcsNode) {
+                if (_inNpcRefsNode) {
                     ((Scene) _obj).setNpcMap(map);
                 }
 
-                if (_inItemsNode) {
+                if (_inItemRefsNode) {
                     ((Scene) _obj).setItemMap(map);
                 }
             }
         }
+
+        if (_inAttributeSubNode) {
+            if (_inNpcNode && _obj instanceof Npc) {
+                String val = new String(ch, start, length);
+                ((Npc)_obj).setAttribute(_currentAttributeNode, Integer.parseInt(val));
+            }
+        }
     }
 
+    /**
+     * A simple utility method to parse JSON formatted data. Currently only accepts somply formated
+     * data in the form of { String : Value }
+     * @param jsonStyleString The string containing the JSON formatted data.
+     * @return returns a map of the values as a set of strings.
+     */
     private Map<String, String> parseMap(String jsonStyleString) {
         if (jsonStyleString.indexOf('{') < 0 || jsonStyleString.indexOf('}') < 0 ||
                 jsonStyleString.indexOf('{') > 0 || jsonStyleString.indexOf('}') <
@@ -149,6 +240,13 @@ public class AdventureFileSAXHandler extends DefaultHandler {
         return valueMap;
     }
 
+    /**
+     * This is a utility method for triming the specified character from the beginning and end of a
+     * string.
+     * @param c The character to trim off.
+     * @param s The string to trim the character from
+     * @return The new trimmed string.
+     */
     private String trimChar(char c, String s) {
         if (!(s.equals("\"\"") || s.equals("\"") || s.equals(""))) {
             int start = s.indexOf(c);
