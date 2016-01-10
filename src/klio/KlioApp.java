@@ -51,6 +51,9 @@ public class KlioApp {
 
         // TODO: Load the adventure file
         //  * Add each scene from the file into the scene map.
+        //  * Add each npc from the file into the scene map.
+        //  * Add each item from the file into the scene map.
+
         _adventureFile = adventureFile;
 
         try {
@@ -93,10 +96,20 @@ public class KlioApp {
         }
 
         System.out.println("---= Item Data =---");
+
+        for (Map.Entry<Integer, Item> e : _itemMap.entrySet()) {
+            System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
+
+            for (Map.Entry<String, Integer> f : e.getValue().getAttributeMap().entrySet()) {
+                if (f.getValue() != null) {
+                    System.out.println("  " + f.getKey() + ": " + f.getValue());
+                }
+            }
+        }
     }
 
     private void createCharacter() {
-        // TODO: tart a loop that populates a player character
+        // TODO: Start a loop that populates a player character
 
         // Use D20 character traits. Basic attributes should be enough to calculate the rest of the
         // character.

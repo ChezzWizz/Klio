@@ -24,8 +24,9 @@ package klio;
 
 
 import java.io.File;
+import java.nio.file.Paths;
 
-/**
+ /**
  * This is the main application class. Handles command line options, creates application object, and
  * starts the main game loop.
  *
@@ -41,7 +42,16 @@ public class Klio {
 
         // if an adventure file is passed as an argument then set the file to the arguments
         //  parameter. Otherwise, set the file to a default adventure file or show an error.
-        adventureFile = new File("default_adventure.kaf");
+        if (args.length > 0) {
+            if (args[0].equals("-a")) {
+                adventureFile = new File(args[1]);
+            } else {
+                System.out.println("Unrecognized argument: " + args[0]);
+                System.exit(-1);
+            }
+        } else {
+            adventureFile = new File("default_adventure.kaf");
+        }
 
         // Start the application
         KlioApp app = new KlioApp(adventureFile);

@@ -200,14 +200,25 @@ public class AdventureFileSAXHandler extends DefaultHandler {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
 
-        if (_inSceneNode && _inTextNode && _obj instanceof Scene) {
-            ((Scene)_obj).setText(new String(ch, start, length));
+        // Sets the objects text node //////////////////////////////////////////////////////////////
+        if (_inTextNode) {
+            String text = new String(ch, start, length);
+
+            if (_inSceneNode && _obj instanceof Scene) {
+                ((Scene)_obj).setText(text);
+            }
+
+            if (_inNpcNode && _obj instanceof Npc) {
+                ((Npc)_obj).setText(text);
+            }
+
+            if (_inItemNode && _obj instanceof Item) {
+                ((Item)_obj).setText(text);
+            }
+
         }
 
-        if (_inNpcNode && _inTextNode && _obj instanceof Npc) {
-            ((Npc)_obj).setText(new String(ch, start, length));
-        }
-
+        // Sets the objects commands, npc references, and item references //////////////////////////
         if (_inCommandsNode || _inNpcRefsNode || _inItemRefsNode) {
             Map<String, String> map = parseMap(new String(ch, start, length));
 
@@ -224,8 +235,25 @@ public class AdventureFileSAXHandler extends DefaultHandler {
                     ((Scene) _obj).setItemMap(map);
                 }
             }
+
+            if (_inNpcNode && _obj instanceof Npc) {
+                if (_inCommandsNode) {
+                    ((Npc) _obj).setCommandMap(map);
+                }
+
+                if (_inItemRefsNode) {
+                    ((Npc) _obj).setItemMap(map);
+                }
+            }
+
+            if (_inItemNode && _obj instanceof Item) {
+                if (_inCommandsNode) {
+                    ((Item) _obj).setCommandMap(map);
+                }
+            }
         }
 
+        // Sets the objects attributes /////////////////////////////////////////////////////////////
         if (_inAttributeSubNode) {
         	String val = new String(ch, start, length);
         	
