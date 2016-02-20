@@ -35,93 +35,51 @@ import java.util.Map;
  * Created by Chezz on 1/1/2016.
  */
 public class KlioApp {
-    private final String _PROMPT = "~>";
 
-    private File _adventureFile;
-    private Map<Integer, Scene> _sceneMap;
-    private Map<Integer, Npc> _npcMap;
-    private Map<Integer, Item> _itemMap;
-    private PlayerCharacter _pc;
-    private Scene _currentScene;
+    private static final int GAME_STATE_INITILIZING = 0;
+    private static final int GAME_STATE_RUNNING = 1;
+    private static final int GAME_STATE_CLOSING = 3;
+    private static final int GAME_STATE_ERROR = -1;
+
+    private static final String PROMPT = "~>";
+    private AdventureFile gameFile;
+    private String title;
+    private Map<String, Action> verbMap;
+    private int gameState;
+    private boolean initialized;
 
     public KlioApp(File adventureFile) {
-        _sceneMap = new HashMap<>();
-        _npcMap = new HashMap<>();
-        _itemMap = new HashMap<>();
-
-        // TODO: Load the adventure file
-        //  * Add each scene from the file into the scene map.
-        //  * Add each npc from the file into the scene map.
-        //  * Add each item from the file into the scene map.
-
-        _adventureFile = adventureFile;
-
-        try {
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = parserFactory.newSAXParser();
-            AdventureFileSAXHandler saxHandler = new AdventureFileSAXHandler(_sceneMap, _npcMap, _itemMap);
-            saxParser.parse(_adventureFile, saxHandler);
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        gameState = GAME_STATE_INITILIZING;
+        gameFile = new AdventureFile(adventureFile);
     }
 
-    public void startGame() {
-        // TODO: Start the primary game loop
-        //  * Get a player character to use
-        //  * Start displaying scenes followed by a prompt
-        //  * Get user input and display a new scene
+    public void init() {
 
-        dataDump();
+
+        initialized = true;
     }
 
-    private void dataDump() {
-        System.out.println("---= Scene Data =---");
-
-        for (Map.Entry<Integer, Scene> e : _sceneMap.entrySet()) {
-            System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
+    public void start() {
+        if(initialized) {
+            gameState = GAME_STATE_RUNNING;
         }
 
-        System.out.println("---= NPC Data =---");
+        while(gameState == GAME_STATE_RUNNING) {
 
-        for (Map.Entry<Integer, Npc> e : _npcMap.entrySet()) {
-            System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
-
-            for (Map.Entry<String, Integer> f : e.getValue().getAttributeMap().entrySet()) {
-                System.out.println("  " + f.getKey() + ": " + f.getValue());
-            }
+            System.out.println(PROMPT);
+            Command cmd = getCommand();
+            processCommand(cmd);
 
         }
 
-        System.out.println("---= Item Data =---");
-
-        for (Map.Entry<Integer, Item> e : _itemMap.entrySet()) {
-            System.out.println(e.getValue().getId() + ": " + e.getValue().getText());
-
-            for (Map.Entry<String, Integer> f : e.getValue().getAttributeMap().entrySet()) {
-                if (f.getValue() != null) {
-                    System.out.println("  " + f.getKey() + ": " + f.getValue());
-                }
-            }
-        }
     }
 
-    private void createCharacter() {
-        // TODO: Start a loop that populates a player character
-
-        // Use D20 character traits. Basic attributes should be enough to calculate the rest of the
-        // character.
+    private Command getCommand() {
+        return new Command("test", "this");
     }
 
-    private void processCommandStr(String command, Integer currentScene) {
-        // TODO: Interpret the command string
-        // Either run a sub process, such as a battle sequence, or modify the currentScene object to
-        // contain the id of the next scene to print for the user.
+    private void processCommand(Command c) {
+
     }
 
-    private void startBattleSequence(int npcId) {
-        // TODO: Execute a loop that runs through the battle sequence with the specified NPC
-    }
 }

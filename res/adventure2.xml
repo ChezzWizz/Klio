@@ -1,0 +1,37 @@
+<klio_adventure>
+    <meta>
+        <title>Test Adventure</title>
+        <author>Chezz</author>
+        <date>2/18/16</date>
+    </meta>
+    <verbs>
+        <verb action="describe">examine</verb>
+        <verb action="relocate">move</verb>
+    </verbs>
+    <scenes>
+        <entry_point id="00000001"/>
+        <scene id="00000001" var="rm1" locked="false">
+            <name>Room 1</name>
+            <description>You stand in a room. To the east is {rm2}. On the wall hangs a {item1}.</description>
+            <exit direction="east" link="00000002"/>
+            <item_ref id="00000001"/>
+        </scene>
+        <scene id="00000002" var="rm2" locked="false">
+            <name>Room 2</name>
+            <exit direction="west" link="00000001"/>
+            <verbs>
+                <verb action="endGame">end</verb>
+            </verbs>
+        </scene>
+    </scenes>
+    <items>
+        <item id="00000001" var="item1" inventory="false">
+            <name>Picture Frame</name>
+            <description>Inside the frame is a picture of an old man you do not recognize.</description>
+            <text var="item1text2">You touch the frame and it falls to the floor shattering glass everywhere.</text>
+            <verbs>
+                <verb action="describe item1text2">move</verb>
+            </verbs>
+        </item>
+    </items>
+</klio_adventure>

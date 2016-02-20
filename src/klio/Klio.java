@@ -24,37 +24,31 @@ package klio;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 
  /**
  * This is the main application class. Handles command line options, creates application object, and
  * starts the main game loop.
  *
- * Created by Chezz on 1/1/2016.
  */
 public class Klio {
     public static void main(String[] args) {
-        // TODO: Parse any commandline switches
-        //      Possible switches:
-        //          -a <adventure_filename>
 
-        File adventureFile = null;
+        if(args.length != 1) {
+            System.err.println("Invalid argument. Please provide the adventure filename.");
+            System.exit(-1);
+        }
 
-        // if an adventure file is passed as an argument then set the file to the arguments
-        //  parameter. Otherwise, set the file to a default adventure file or show an error.
-        if (args.length > 0) {
-            if (args[0].equals("-a")) {
-                adventureFile = new File(args[1]);
-            } else {
-                System.out.println("Unrecognized argument: " + args[0]);
-                System.exit(-1);
-            }
-        } else {
-            adventureFile = new File("default_adventure.kaf");
+        File adventureFile = new File(args[0]);
+
+        if(!adventureFile.exists()) {
+            System.err.println("Invalid file: " + adventureFile.getAbsolutePath());
+            System.exit(-1);
         }
 
         // Start the application
         KlioApp app = new KlioApp(adventureFile);
-        app.startGame();
+        app.start();
     }
 }
