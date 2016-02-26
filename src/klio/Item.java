@@ -13,12 +13,10 @@ public class Item extends AdventureGameObject {
     private boolean inventory;
 
     private String name;
-    private String description;
     private Map<String, Action> verbMap;
-    private List<AdventureGameObject> gameObjectList;
 
-    public Item(int id, String varId, boolean isInventoryItem) {
-        super(id, varId);
+    public Item(String id, boolean isInventoryItem) {
+        super(id);
         inventory = isInventoryItem;
     }
 
@@ -27,7 +25,7 @@ public class Item extends AdventureGameObject {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        addSubobject(new TextObject("description", description));
     }
 
     public void addVerb(String verb, Action action) {
@@ -36,14 +34,6 @@ public class Item extends AdventureGameObject {
         }
 
         verbMap.put(verb, action);
-    }
-
-    public void addGameObject(AdventureGameObject object) {
-        if(gameObjectList == null) {
-            gameObjectList = new ArrayList<>();
-        }
-
-        gameObjectList.add(object);
     }
 
 }

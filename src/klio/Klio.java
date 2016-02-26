@@ -25,7 +25,6 @@ package klio;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 
  /**
  * This is the main application class. Handles command line options, creates application object, and
@@ -40,15 +39,14 @@ public class Klio {
             System.exit(-1);
         }
 
-        File adventureFile = new File(args[0]);
-
-        if(!adventureFile.exists()) {
-            System.err.println("Invalid file: " + adventureFile.getAbsolutePath());
+        try {
+            KlioApp.instance.loadAdventureFile(args[0]);
+        } catch (FileNotFoundException e) {
+            System.err.println("Invalid adventure file.");
             System.exit(-1);
         }
 
         // Start the application
-        KlioApp app = new KlioApp(adventureFile);
-        app.start();
+        KlioApp.instance.start();
     }
 }

@@ -13,14 +13,11 @@ public class Scene extends AdventureGameObject {
     private boolean locked;
 
     private String name;
-    private String description;
     private Map<String, Exit> exitMap;
     private List<Item> itemList;
-    private Map<String, Action> verbMap;
-    private List<AdventureGameObject> gameObjectList;
 
-    public Scene(int id, String varId, boolean isLocked) {
-        super(id, varId);
+    public Scene(String id, boolean isLocked) {
+        super(id);
         locked = isLocked;
     }
 
@@ -29,7 +26,7 @@ public class Scene extends AdventureGameObject {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        addSubobject(new TextObject("description", description));
     }
 
     public void addExit(String direction, Exit exit) {

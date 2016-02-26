@@ -5,17 +5,20 @@ package klio;
  */
 public class Command {
 
-    private String modVerb;
     private String verb;
-    private String noun;
+    private String object;
 
-    public Command(String modifierVerb, String verb, String noun) {
-        this.modVerb = modifierVerb;
+    public Command(String verb, String object) {
         this.verb = verb;
-        this.noun = noun;
+        this.object = object;
     }
 
-    public Command(String verb, String noun) {
-        this(null, verb, noun);
+    public String getVerb() {
+        return verb;
     }
+
+    public String getObject() {
+        return object;
+    }
+
 }

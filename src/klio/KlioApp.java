@@ -22,12 +22,9 @@
 
 package klio;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * This class represents the application state and actions.
@@ -36,37 +33,54 @@ import java.util.Map;
  */
 public class KlioApp {
 
-    private static final int GAME_STATE_INITILIZING = 0;
-    private static final int GAME_STATE_RUNNING = 1;
-    private static final int GAME_STATE_CLOSING = 3;
-    private static final int GAME_STATE_ERROR = -1;
+    public static final int GAME_STATE_LIMBO = 0;
+    public static final int GAME_STATE_INITILIZING = 1;
+    public static final int GAME_STATE_RUNNING = 2;
+    public static final int GAME_STATE_CLOSING = 3;
+    public static final int GAME_STATE_ERROR = -1;
+
+    public static KlioApp instance = new KlioApp();
+    public static int gameState = GAME_STATE_LIMBO;
 
     private static final String PROMPT = "~>";
-    private AdventureFile gameFile;
     private String title;
     private Map<String, Action> verbMap;
-    private int gameState;
     private boolean initialized;
+    private Scanner keyboard;
+    private AdventureFile adventureFile;
 
-    public KlioApp(File adventureFile) {
+    public KlioApp() {
         gameState = GAME_STATE_INITILIZING;
-        gameFile = new AdventureFile(adventureFile);
+        keyboard = new Scanner(System.in);
     }
 
-    public void init() {
+    public void initialize() {
 
+        ActionFactory.instance.initialize();
 
-        initialized = true;
+        PlayerCharacter.instance.initialize(adventureFile.getEntryPoint());
+
+        if(ActionFactory.isInitialized() && PlayerCharacter.isInitialized()) {
+            initialized = true;
+        }
+
+    }
+
+    public void loadAdventureFile(String fileName) throws FileNotFoundException {
+        adventureFile = new AdventureFile(fileName);
     }
 
     public void start() {
+
+        initialize();
+
         if(initialized) {
             gameState = GAME_STATE_RUNNING;
         }
 
         while(gameState == GAME_STATE_RUNNING) {
 
-            System.out.println(PROMPT);
+            System.out.print(PROMPT + " ");
             Command cmd = getCommand();
             processCommand(cmd);
 
@@ -75,10 +89,26 @@ public class KlioApp {
     }
 
     private Command getCommand() {
-        return new Command("test", "this");
+
+        String rawInput = keyboard.nextLine();
+
+        String[] parsedInput = rawInput.split("\\s");
+
+        if(parsedInput.length < 2) {
+            return new Command(parsedInput[0], null);
+        }
+
+        return new Command(parsedInput[0], parsedInput[1]);
     }
 
     private void processCommand(Command c) {
+
+        // TODO: Process verb based on verb mapping
+        //      * Check the object context first.
+        //      * Check the global object second.
+
+        // This is for testing only
+        ActionFactory.instance.getAction(c.getVerb()).execute(new TextObject("text", "Some text."));
 
     }
 

@@ -9,26 +9,26 @@
         <verb action="relocate">move</verb>
     </verbs>
     <scenes>
-        <entry_point id="00000001"/>
-        <scene id="00000001" var="rm1" locked="false">
+        <entry_point id="rm1"/>
+        <scene id="rm1" locked="false">
             <name>Room 1</name>
             <description>You stand in a room. To the east is {rm2}. On the wall hangs a {item1}.</description>
-            <exit direction="east" link="00000002"/>
-            <item_ref id="00000001"/>
+            <exit direction="east" link="rm2"/>
+            <item_ref id="item1"/>
         </scene>
-        <scene id="00000002" var="rm2" locked="false">
+        <scene id="rm2" locked="false">
             <name>Room 2</name>
-            <exit direction="west" link="00000001"/>
+            <exit direction="west" link="rm1"/>
             <verbs>
                 <verb action="endGame">end</verb>
             </verbs>
         </scene>
     </scenes>
     <items>
-        <item id="00000001" var="item1" inventory="false">
+        <item id="item1" inventory="false">
             <name>Picture Frame</name>
             <description>Inside the frame is a picture of an old man you do not recognize.</description>
-            <text var="item1text2">You touch the frame and it falls to the floor shattering glass everywhere.</text>
+            <text id="item1text2">You touch the frame and it falls to the floor shattering glass everywhere.</text>
             <verbs>
                 <verb action="describe item1text2">move</verb>
             </verbs>

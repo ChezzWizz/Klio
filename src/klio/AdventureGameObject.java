@@ -1,16 +1,34 @@
 package klio;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Chezz on 2/18/2016.
  */
-public class AdventureGameObject {
+public abstract class AdventureGameObject {
 
-    protected int id;
-    protected String varId;
+    protected String id;
+    protected Map<String, AdventureGameObject> subobjectMap;
 
-    public AdventureGameObject(int id, String varId) {
+    public AdventureGameObject(String id) {
         this.id = id;
-        this.varId = varId;
+    }
+
+    public void addSubobject(AdventureGameObject ago) {
+        if(subobjectMap == null) {
+            subobjectMap = new HashMap<>();
+        }
+
+        subobjectMap.put(ago.getId(), ago);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public AdventureGameObject getSubobject(String id) {
+        return subobjectMap.get(id);
     }
 
 }
