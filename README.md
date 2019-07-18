@@ -13,5 +13,9 @@ and jvm command "java" from the `Klio\src` directory:
     java klio.Klio
 
 With the default file located in the working directory when the application is run, this application
-will currently print out the data straight from the XML file showing that the maps have been
+will currently print out the data straight from the XML([YAML]? [JSON]?) file showing that the maps have been
 populated and the Scene and Npc objects have been instantiated.
+
+[YAML]: https://yaml.org/spec/1.2/spec.html "YAML Specification"
+[JSON]: http://www.ietf.org/rfc/rfc4627.txt "JSON RFC"
+[JSON]: http://json.org "JSON Homepage"
